@@ -1,0 +1,101 @@
+import random
+import time as t
+import random
+
+
+def valid_number():
+    flag = True
+    while flag:
+        un = input()
+        if (len(un) == len(str(start)) or len(un) == len(str(finish))) and un.isdigit():
+            return un
+        elif (
+            len(str(un)) != len(str(start)) or len(un) != len(str(finish))
+        ) and un.isdigit():
+            print("Введите корректное число")
+        else:
+            print("Введите целочисленное число")
+
+
+def checking(x):
+    if int(x) < start or int(x) > finish:
+        return False
+
+
+def choice():
+    flag = True
+    print(
+        "Добро пожаловать в очередную игру угадайку. Правила стандартные. Для начала выбери от какого числа начнем угадывать и до какого. Условие одно, выбери числа до тысячи."
+    )
+    while flag:
+        global start, finish
+
+        try:
+            start = int(input())
+            finish = int(input())
+
+            if start < 0 or finish < 0:
+                print("Числа должны быть положительными")
+            elif start > 999 or finish > 1000:
+                print("Неа, число поменьше бери")
+            elif finish - start < 100 or finish < start:
+                print("На таких условиях я не играю")
+            else:
+                print("Супер, ну теперь помчали")
+                t.sleep(3)
+                print("Я загадал число.")
+                flag = False
+        except ValueError:
+            print("Введите целые числа")
+
+
+def game():
+    choice()
+
+    programm = random.randint(start, finish)
+    programm = str(programm)
+
+    counter = 0
+    while counter != 5:
+        user = valid_number()
+        if not checking(user):
+            print(f"Не попал в свой же диапазон от {start} до {finish}")
+            continue
+        counter += 1
+        cnt = 0
+        user = str(user)
+        for indx in range(len(list(str(user)))):
+            try:
+                if user[indx] == programm[indx]:
+                    cnt += 1
+            except IndexError:
+                print("Вне диапазона")
+
+        if cnt == 0:
+            minicnt = 0
+            for digit in list(user):
+                if digit in list(programm):
+                    minicnt += 1
+            if minicnt > 0:
+                print("Есть совпадение, но не на своей позиции, соре")
+            else:
+                print("Ни одна цифра не на своей позиции или вообще не те цифры")
+        elif cnt == 1:
+            print("Одна цифра правильная на своей позиции")
+        elif cnt == 2:
+            print("Две цифры правильные на своей позиции")
+        elif cnt == 3:
+            print(f"Ровно в точку! {counter} попыток ваууууу")
+            break
+    if counter == 5 and cnt != 5:
+        print(
+            f"Попытки закончились, загаданное число - {programm} хочешь попробовать еще раз? да/нет"
+        )
+        user_answer = input().lower()
+        if user_answer == "да":
+            game()
+        else:
+            print("Спасибо за игру")
+
+
+game()
